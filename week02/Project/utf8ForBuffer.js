@@ -46,5 +46,29 @@ function UTF8_Encoding(str) {
   return _byteLength;
   //   return new Buffer.from(string,"utf8");
 }
-let a = UTF8_Encoding("中");
-console.log(a);
+let code = "中国".charCodeAt(0);
+// 转换二进制
+function BinaryInteger(num, arrRemainder) {
+  if (num > 0) {
+    arrRemainder.push((num % 2))
+    return BinaryInteger(Math.floor(num / 2), arrRemainder);
+  } else {
+    return arrRemainder.reverse().join("");
+  }
+}
+// 转换十六进制
+console.log(BinaryInteger(code, []));
+console.log(code.toString(2));
+// let a = UTF8_Encoding("中");
+// console.log(a);
+
+
+// 15 & (code >> 12)
+// 63 & (code >> 6)
+// 63 & code
+
+// 0100
+// 0100111000
+// 0100111000101101
+
+// 11100100 10111000 10101101
