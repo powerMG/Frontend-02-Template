@@ -1,5 +1,5 @@
 const net = require("net");
-const { timingSafeEqual } = require("crypto");
+const htmlParser = require("./htmlParser")
 class Request {
   constructor(options) {
     this.method = options.method || "GET";
@@ -25,8 +25,8 @@ class Request {
   toString() {
     return `${this.method} ${this.path} HTTP/1.1\r
 ${Object.keys(this.headers)
-  .map((key) => `${key}: ${this.headers[key]}`)
-  .join("\r\n")}\r\n
+        .map((key) => `${key}: ${this.headers[key]}`)
+        .join("\r\n")}\r\n
 ${this.bodyText}`;
   }
   send(connection) {
@@ -204,5 +204,7 @@ void (async function () {
     },
   });
   let response = await request.send();
-  console.log(JSON.stringify(response));
+  // 解析HTML
+  htmlParser.parseHtml(response.body)
+  // console.log(JSON.stringify(response));
 })();
