@@ -1,9 +1,5 @@
 /**
- * abcabcabx
- * abcabx
  * 使用状态机完成“abababx”的处理 
- * abbabababxabababx
- * abababx
  */
 /* 主函数 */
 function match(str) {
@@ -72,5 +68,4 @@ function stateX(str) {
 function end() {
     return end;
 }
-// console.log(match("abbabababx"));
 console.log(match("abcabababx"));
