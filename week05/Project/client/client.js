@@ -1,5 +1,7 @@
 const net = require("net");
-const htmlParser = require("./htmlParser")
+const htmlParser = require("./htmlParser");
+const images = require("images");
+const render = require("./render.js");
 class Request {
   constructor(options) {
     this.method = options.method || "GET";
@@ -25,8 +27,8 @@ class Request {
   toString() {
     return `${this.method} ${this.path} HTTP/1.1\r
 ${Object.keys(this.headers)
-        .map((key) => `${key}: ${this.headers[key]}`)
-        .join("\r\n")}\r\n
+  .map((key) => `${key}: ${this.headers[key]}`)
+  .join("\r\n")}\r\n
 ${this.bodyText}`;
   }
   send(connection) {
@@ -205,6 +207,9 @@ void (async function () {
   });
   let response = await request.send();
   // 解析HTML
-  htmlParser.parseHtml(response.body)
-  // console.log(JSON.stringify(response));
+  let dom = htmlParser.parseHtml(response.body);
+  console.log(JSON.stringify(response));
+  let viewport = images(800, 600);
+  render(viewport, dom.children[0].children[3].children[1].children[3]);
+  viewport.save("viewport.jpg");
 })();
