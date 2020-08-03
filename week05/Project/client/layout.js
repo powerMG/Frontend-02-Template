@@ -167,6 +167,10 @@ function layout(element) {
   } else {
     flexLine.crossSpace = crossSpace;
   }
+  /**
+   * 计算主轴信息
+   */
+  // 剩余空间小于0时，进行等比压缩
   if (mainSpace < 0) {
     var scale = style[mainSize] / (style[mainSize] - mainSpace);
     var currentMain = mainBase;
@@ -186,6 +190,7 @@ function layout(element) {
     flexLines.forEach((items) => {
       var mainSpace = items.mainSpace;
       var flexTotal = 0;
+      // 循环计算所有flex的数量
       for (var i = 0; i < items.length; i++) {
         var item = items[i];
         var itemStyle = getStyle(item);
@@ -194,17 +199,18 @@ function layout(element) {
           continue;
         }
       }
+      // 存在flex元素时
       if (flexTotal > 0) {
         var currentMain = mainBase;
         for (var i = 0; i < items.length; i++) {
           var item = items[i];
           var itemStyle = getStyle(item);
           if (itemStyle.flex) {
-            itemStyle[mainSize] = (mainSize / flexTotal) * itemStyle.flex;
+            itemStyle[mainSize] = (mainSpace / flexTotal) * itemStyle.flex;
           }
-          itemStyle[mainSize] = currentMain;
+          itemStyle[mianStart] = currentMain;
           itemStyle[mainEnd] =
-            (itemStyle[mianStart] || 0) + mainSign * itemStyle[mainSize];
+            itemStyle[mianStart] + mainSign * itemStyle[mainSize];
           currentMain = itemStyle[mainEnd];
         }
       } else {
@@ -230,23 +236,26 @@ function layout(element) {
         }
         for (var i = 0; i < items.length; i++) {
           var item = items[i];
-          itemStyle[(mianStart, currentMain)];
+          itemStyle[mianStart] = currentMain;
           itemStyle[mainEnd] =
-            (itemStyle[mianStart] || 0) + mainSign * itemStyle[mainSize];
+            itemStyle[mianStart] + mainSign * itemStyle[mainSize];
           currentMain = itemStyle[mainEnd] + step;
         }
       }
     });
   }
-  var crossSpace;
-  if (!style[crossSize]) {
+  /**
+   * 计算交叉轴信息
+   */
+  var crossSpace;  
+  if (!style[crossSize]) {// 父元素不存在行高时
     crossSpace = 0;
     elementStyle[crossSize] = 0;
     for (var i = 0; i < flexLines.length; i++) {
       elementStyle[crossSize] =
         elementStyle[crossSize] + flexLines[i].crossSpace;
     }
-  } else {
+  } else {// 父元素存在行高时
     crossSpace = style[crossSize];
     for (var i = 0; i < flexLines.length; i++) {
       crossSpace -= flexLines[i].crossSpace;
@@ -284,6 +293,7 @@ function layout(element) {
     step = 0;
   }
   flexLines.forEach((items) => {
+    // 记录真实交叉轴的尺寸
     var lineCrossSize =
       style.alignContent === "stretch"
         ? items.crossSpace + crossSpace / flexLines.length
@@ -292,34 +302,35 @@ function layout(element) {
       var item = items[i];
       var itemStyle = getStyle(item);
       var align = itemStyle.alignSelf || style.aliginItems;
-      if (itemStyle[crossSize] === null) {
+      // item未指定交叉轴尺寸时
+      if (!itemStyle[crossSize]) {
         itemStyle[crossSize] = align === "stretch" ? lineCrossSize : 0;
       }
       if (align === "flex-start") {
-        itemStyle[crossSize] = crossBase;
+        itemStyle[crossStart] = crossBase;
         itemStyle[crossEnd] =
           itemStyle[crossStart] + crossSign * itemStyle[crossSize];
       }
       if (align === "flex-end") {
-        itemStyle[crossSize] = crossBase + crossSign * lineCrossSize;
-        itemStyle[crossEnd] =
+        itemStyle[crossEnd] = crossBase + crossSign * lineCrossSize;
+        itemStyle[crossStart] =
           itemStyle[crossEnd] - crossSign * itemStyle[crossSize];
       }
       if (align === "center") {
-        itemStyle[crossSize] =
-          crossBase + (crossSign * (lineCrossSize - itemStyle[crossSize])) / 2;
+        itemStyle[crossStart] =
+          crossBase + crossSign * (lineCrossSize - itemStyle[crossSize]) / 2;
         itemStyle[crossEnd] =
           itemStyle[crossStart] + crossSign * itemStyle[crossSize];
       }
       if (align === "stretch") {
         itemStyle[crossStart] = crossBase;
+        // 填满
         itemStyle[crossEnd] =
           crossBase +
           crossSign *
             ((itemStyle[crossSize] !== null && itemStyle[crossSize]) || 0);
         itemStyle[crossSize] =
-          crossSign *
-          crossSign * (itemStyle[crossEnd] - itemStyle[crossStart]);
+          crossSign * crossSign * (itemStyle[crossEnd] - itemStyle[crossStart]);
       }
     }
     crossBase += crossSign * (lineCrossSize + step);

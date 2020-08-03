@@ -29,11 +29,11 @@ http
             #container #myid{
               width:200px;   
               height:100px;
-              background-color:rgb(255,0,0);           
+              background-color:rgb(255,0,0);        
             }
             #container .c1{
               flex:1;  
-              background-color:rgb(0,255,0);           
+              background-color:rgb(0,255,0);            
             }
             </style>
         </head>
