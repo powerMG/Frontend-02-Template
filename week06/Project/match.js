@@ -21,7 +21,7 @@ function match(selector, element) {
   arrRulers.rules.forEach((item) => {
     if (item.value.match(/#\w?.*/)) {
       // id选择器
-      if (currentElement.id === item.value.indexOf()) {
+      if (currentElement.id === item.value.replace("#")) {
         verification(item, currentElement);
       } else {
         return false;
@@ -143,6 +143,6 @@ function DescendantSelector(selector) {
     });
   }
 }
-// OffspringSelector("div #id.class~.abc");
+OffspringSelector("div #id.class~.abc");
 // console.log(arrRulers);
-match("div #id.class", document.getElementById("id"));
+// match("div #id.class", document.getElementById("id"));
